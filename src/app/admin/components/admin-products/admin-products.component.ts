@@ -1,49 +1,55 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { Product } from 'src/app/shared/models/product';
-import { ProductService } from 'src/app/shared/services/product.service';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Subscription } from "rxjs";
+import { Product } from "src/app/shared/models/product";
+import { ProductService } from "src/app/shared/services/product.service";
 
 @Component({
-  selector: 'admin-products',
-  templateUrl: './admin-products.component.html',
-  styleUrls: ['./admin-products.component.scss']
+  selector: "admin-products",
+  templateUrl: "./admin-products.component.html",
+  styleUrls: ["./admin-products.component.scss"],
 })
 export class AdminProductsComponent implements OnInit, OnDestroy {
-
   products: Partial<Product>[] = [];
   filteredProducts: any[] = [];
   subscription: Subscription | undefined;
 
-  constructor(
-    private productService: ProductService
-  ) { 
-    this.subscription = this.productService.getAll()
-      .subscribe(actions => {
-        this.products = [];
+  constructor(private productService: ProductService) {
+    this.subscription = this.productService.getAll().subscribe((actions) => {
+      this.products = [];
 
-        actions.forEach(action => {
-          const val: any = action.payload.val();
-          this.products.push({
-            $key: action.key ? action.key : '', 
-            ...<Object>action.payload.val()
-          });
+      actions.forEach((action) => {
+        const val: any = action.payload.val();
+        this.products.push({
+          $key: action.key ? action.key : "",
+          ...(<Object>action.payload.val()),
         });
-
-        this.filteredProducts = this.products;
       });
+
+      this.filteredProducts = this.products;
+      setTimeout(() => {
+        $("#datatableexample").DataTable({
+          pagingType: "full_numbers",
+          pageLength: 10,
+          processing: true,
+          lengthMenu: [5, 10, 25],
+        });
+      }, 1);
+    });
   }
 
   filter(query: string) {
-    this.filteredProducts = (query) 
-      ? this.products?.filter(p => p && p.title ? p.title.toLowerCase().includes(query.toLowerCase()) : null)
+    this.filteredProducts = query
+      ? this.products?.filter((p) =>
+          p && p.title
+            ? p.title.toLowerCase().includes(query.toLowerCase())
+            : null
+        )
       : this.products;
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngOnDestroy() {
     this.subscription?.unsubscribe();
   }
-
 }
