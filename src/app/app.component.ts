@@ -9,7 +9,7 @@ import { UserService } from './shared/services/user.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'mich-shop';
+  title = 'Rshop';
 
   constructor(
     private userService: UserService, 

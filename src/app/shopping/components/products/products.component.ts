@@ -17,7 +17,7 @@ export class ProductsComponent implements OnInit {
   products: Product[] = [];
   filteredProducts: Product[] = [];
   category: string | undefined;
-  cart$: Observable<ShoppingCart> | undefined;
+  cart$: Observable<ShoppingCart> | undefined;  
 
   constructor(
     private route: ActivatedRoute,
